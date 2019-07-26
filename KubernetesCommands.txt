@@ -1,0 +1,17 @@
+    #The command to get all the nodes in the cluster
+kubectl get nodes
+#The commamd to get the cluster information including the ipadress or FQDN of master node
+# and the services running on it
+kubectl cluster-info
+#To get component status
+kubectl get cs
+#To scale existing rc for the replice counts
+kubectl scale rc <rcName> --replicas=<replicaCount>
+#To ssh to VM which is running the kubernetes applicable for Minikube Password is tcuser
+ssh docker@<masterNodeIPAddress>
+#The below command pushes the docker-env variables of minikube to your system bash
+#and thus any docker build / images/ containers will be installed in that environments
+eval $(minikube docker-env)
+kubectl config current-context // display the current context
+kubectl config use-context
+kubectl apply --filename <addon> //install the addon 

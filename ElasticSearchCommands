@@ -1,0 +1,23 @@
+#To get the list of indices from the elastic search
+http://<ipAddress>:9200/_cat/indices?pretty=true
+#To push a documents to a particular index
+PUT /candidate_index/candidate/1?pretty=true
+{
+ "name" : "Donald John Trump",
+ "affiliation" : "Republican",
+ "age" : "69",
+ "occupation" : "businessman",
+ "twitter" : "https://twitter.com/realDonaldTrump",
+ "website" : "http://www.donaldjtrump.com"
+}
+#To get the document for a particular index
+GET /<indexName>/<documentType>/<documentID>?pretty=true
+#To search under a particular index a property value
+GET /<indexName>/_search?q=<propertyValue>&pretty=true
+#To get all the mapping of this index
+GET <indexName>/_mapping
+#A sample command for creating or updating a document
+curl -XPUT "[endpoint]/[index_name]/[type_name]/[id]" -d'
+{
+    [document body]
+}'

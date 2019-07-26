@@ -1,0 +1,179 @@
+Git Commands which are helpful for me
+#Adds the files to commit recursively
+git add --all
+git add -A
+#To add only the updated files in the repository
+git add -u
+#Commits the files to my local repository
+git commit -am "<commit message>"
+#Pushes the files to remote repository which is linked to this local repository
+git push
+#Provide status of the git local repository
+git status
+#To provide the history of all the commits
+git log
+git log --oneline
+#to show changes in particular commits
+git show <commitid>
+#To get the difference between working file and on the version in
+git diff <commitID> <commitID>
+git diff HEAD~1..  // Difference from HEAD-1 to HEAD // the current local repository is always point to HEAD
+#To amend a already committed changes
+git commit --amend -m "<commit message>"
+#To push the changes to repository
+git push <repositoryname>
+#To synchronise the remote repository with local repository
+git pull
+#To stash the local changes so that the working copy is clean again
+git stash
+#To list the stash changes
+git stash list
+#To apply stash changes
+git stash apply
+#To initiliase git repository locally run the below command in the directory
+git init
+#To set the config commands globally
+git config --global user.name "username"
+git config --global user.email "user@git.com"
+#To set the config for the current repository
+git config user.name "username"
+git config user.email "user@emai.com"
+#Every branch has head which is pointing to the latest commit
+#To create a branch this will be created from the current branch ( master,develop depending on the branch which is checked out first  )
+#this branch is created in the local repository and NOT on the remote repository
+git branch <branchName>
+#Another way to create a branch and checkout it
+git checkout -b <branchName>
+#To checkout a branch
+git checkout <branchName>
+#To merge the changes from one branch to another branch
+git checkout <targetBranch>
+git merge <featureBranch>
+#To delete branch locally
+git branch -d <branchName>
+git branch <brachName> <commitID/tagID>
+#To delete branch which is at remote repository
+git push origin --delete <remoteBranchName>
+#To add remote repository to your local repository . This will be ending with .git. The name origin in this place holder one can foo also
+git remote add origin <gitRepositoryURL>
+git remote add foo <gitRepositoryURL>
+#To remove the remote repository
+git remote rm <name> // git remote rm origin or git remote rm foo
+#To push the changes to remote repository, it assumes that you have done git commit on this branch
+git push origin <branchName>
+#To revert a particular commit this would undo the changes made in that commit id
+git revert <commitID>
+#To rebase the current local repository with changes from the same master repository
+git pull --rebase <re
+git pull --rebase origin <remoteRepositoryName>
+#To push a new remote branch on the remote repository
+git branch <featureBranch> #This will create a featureBranch from the existing checked out branch normally master or develop
+git add <featureFiles>
+git commit -m <featureMessage>
+git push origin <featureBranch> #This will push onto remote repository featureBranch
+#To checkout and create  a branch
+git checkout -b <branch>
+#To push the local branch to remote branchName
+git push -u origin <remoteBranchName>
+#In case the branch has already been created and we need tracking information from local to remote
+git branch --set-upstream <localbranchName> <remoteRepositoryURL>/<remoteBranchName>
+Ex: git branch --set-upstream foobar origin/foobar
+#To push all the local branches to remote
+git push --all -u
+#To squash the commit https://www.devroom.io/2011/07/05/git-squash-your-latests-commits-into-one/
+#The below command will squash last three commits and open the editor to pick a commit and squash
+git rebase -i HEAD~3
+#To remove the staged files meaning to remove the files which were tracked by git
+git reset <fileName>
+#To remove all the staged files
+git reset
+#To reset using hard option
+git reset --hard  // to revert
+#To reset using soft option
+#To list all the branches which have been merged into the current checkout branch
+git branch --merged
+#To list remote repository details
+git remote -v
+origin	https://Amey.Rokde@stash.veritas.com/scm/~amey.rokde/pform-test.git (fetch)
+origin	https://Amey.Rokde@stash.veritas.com/scm/~amey.rokde/pform-test.git (push)
+git fetch <specify the remote repository> // from the above example as it has been added under origin and brach name
+git fetch origin/master //this only fetches the content from the specified repository url
+git fetch origin/foobar
+git merge <remoteRepositoryURL>/<branchName> // this merges the changes from remoteRepositoryURL and from brachName into your current repository and branch name
+************************************************************************************
+Git Config Section
+************************************************************************************
+git config --system // System level applies to all the users in the computer
+git config --global // Global level applies to specified user in the the computer
+git config // Run this command on the local repository and applies to it ONLY.
+git config core.autocrlf true|false|input // in case of true the conversion of crlf to lf would happen when commiting and checking the code
+// in case of false no conversion would happen ideal for ONLY windows based systems this means we are pushing the txt files also with CRLF characters
+// in case of input , conversion happens from CRLF to LF when checking out if the files has that characters and not reverse way i.e committing
+git config unset --global core.autocrlf // example the configurations are stored as key value pairs
+git config --global alias.foo "log --oneline --graph --decorate --all" // we have added alias so that entire command can be executed with 'git foo'
+git config --global alias.lga "log --oneline --graph --decorate --all" // did this already for my computer.
+git config --global merge.tool kdiff3 // setting up the merge tool expectation is tool is linked properly or one needs to provide the complete path
+git config --global diff.tool kdiff3 // setting up the merge tool expectation is tool is linked properly or one needs to provide the complete path
+************************************************************************************
+git clean -d -n|f // removes the untracked files from the directory f is for force option -d is for directory
+git log --online --graph // to see the graph of commits made to the repository
+git shortlog // provides per developer how many commits have been made and there commit messages
+git show <commitID> //Shows what changes happened in that commit
+git show HEAD~10 // Show all the commit changes ( last 10 commit changes)
+git log <remoteRepositoryURL>/<branchName> // git log origin/master or git log origin/foobar
+git log --graph --oneline --all --decorate // to print the commit history in oneline along with tag and branch information of all the branches
+************************************************************************************
+Tagging mechanism
+************************************************************************************
+git tag <tagName>
+git tag <tagName_with_message> // add message to this tag
+git tag <tagName_signed> // signs this tag with messsage
+git push --tags // pushes the tags to the remoteRepository // the usecase of tag is Release Candidate , Beta
+************************************************************************************
+Branching mechanism
+************************************************************************************
+git checkout <tagName>
+git checkout -b <branchName> <tagName> // git checkout -b version2 v2.0.0
+https://git-scm.com/book/en/v2/Git-Basics-Tagging
+Idea is to checkout a branch based on the tag. If one does checkout only with tag, the branch which one is working is in detached state from the HEAD
+this would not be useful
+git branch -n <sourceBranchName> <targetBranchName> // one can move sourceBranch to targetBranchName
+git branch -d <branchName> // asking for the deletion of the branch
+git branch -D <branchName> // forcefully deleting the branches
+git checkout -b <branchName> // this would create and checkout the branch
+git reflog // log all the references where the HEAD is pointed to.
+git branch <branchName> <commitID> // creating branch based on the commitID obtained from the reflog
+************************************************************************************
+Merging mechanism
+************************************************************************************
+git merge <branchName> // merges the branchName into the current checkout branch
+git mergetool //invokes the merge tool
+git diff --cached // compare staging area to the repository
+git rebase <sourceBranch>  // this means rebasing the current branch from the sourceBranch
+git rebase --continue // to continue with rebasing process in case the rebasing has stopped due the merge conflict
+************************************************************************************
+Cherry picking the changes
+************************************************************************************
+git cherry-pick <commitID> // applied the commitID changes from any other branch onto your current branch
+//Understands when the changes are cherry picked and applied to the branch
+//once the branch are merged , it does not reappply the same changes again as it aware that it was already cherry picked.
+************************************************************************************
+Pushing the changes to the remote
+************************************************************************************
+git push <remoteRepositoryURL> <branchName>
+git push // if this branch is being tracked then there is no need to specify the remoteRepositoryURL and branchName
+git push <remoteRepositoryURL> <newBranchName> //this will create a new remote branch with name newBranchName and also create a local branch
+git push <remoteRepositoryURL> <newLocalBranchName:newRemoteBranchName> //this will create a new remote branch with name "newRemoteBranchName" and local branch with name newLocalBranchName
+git push <remoteRepositoryURL> <:newRemoteBranchName> // this will be delete the remote branch with name "newRemoteBranchName"
+git push <remoteRepositoryURL><:newBranchName> // this will delete the remote branch with name "newBranchName"
+************************************************************************************
+Stashing mechanism
+************************************************************************************
+//In order to stash the changes git should be aware of this changes meaning they should be staged in other words git add -A should have been executed.
+
+git stash // stash the changes for the current working branch
+git stash list // list of stash changes
+git stash apply // nested stash changes are applied
+git stash pop // apply the top of stashed item from the stash list and remove it from the stash list
+git stash drop // drop the stash change from the list
+git stash branch <branchName> // create a branch , checkout the branch and pop the stash changes and applied to it

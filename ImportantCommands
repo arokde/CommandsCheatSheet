@@ -1,0 +1,131 @@
+PformPune2 Subscriptions
+
+"appId": "da4a7a68-0a4b-4a2c-85ef-305620c29129",  è Service Principal
+"displayName": "azure-cli-2018-03-30-14-51-09",
+"name": "http://azure-cli-2018-03-30-14-51-09",
+"password": "3107fcdd-0ab3-48cd-81df-84d55967f7ca", è Credential
+"tenant": "fc8e13c0-422c-4c55-b3ea-ca318e6cac32".
+
+
+
+To disable ssl verification
+export ADAL_PYTHON_SSL_NO_VERIFY=1
+export AZURE_CLI_DISABLE_CONNECTION_VERIFICATION=1
+
+To add to .bash_profile
+
+export AZ_SUBSCRIPTION_ID=c9315c57-4f7e-451e-afdb-7ad3406efb1a
+export AZ_RESOURCE_GROUP=crux
+export K8_CLUSTER=crux
+export SSH_KEY=~/.ssh/mcdmp.pem
+
+az account set -s $AZ_SUBSCRIPTION_ID
+az acs kubernetes get-credentials --resource-group=$AZ_RESOURCE_GROUP --name=$K8_CLUSTER --ssh-key-file=$SSH_KEY
+kubectl config set-context $(kubectl config current-context) --namespace=platform
+
+# check logs
+kubectl get pod | grep pform-license
+kubectl logs pform-policy-admin-2446992377-35hkk  -f
+kubectl logs pform-policy-admin-2446992377-35hkk  --tail 10
+kubectl logs pform-policy-admin-2446992377-35hkk  --since 5m
+
+
+# Port forward
+kubectl port-forward pform-policy-admin-2446992377-35hkk 9999:3000
+kubectl get svc | grep postgres
+
+# Postgres
+ssh -i ~/.ssh/mcdmp.pem veritas@20.36.28.197
+
+#My cluster
+kubectl config current-context
+
+
+#Helm
+helm ls
+helm install --namespace=platform --name=pform-assetdbservice-api  ~/Downloads/pform-assetdbservice-api-436.tgz --set image.repository=loom-snapshots.repo.veritas.com/ --set image.pullSecret=veritasregistrykey
+helm delete --purge <name of chart>
+
+#exec
+kubectl exec -it <podname> bash
+
+# Kubetail
+brew tap johanhaleby/kubetail && brew install kubetail
+kubetail -n platform -l app=pform-license
+
+
+Persistence VM Public IP Address
+52.229.57.231
+
+
+## 1. Install sshuttle
+`
+sudo pip install sshuttle1
+`
+
+## 2. Get PVM public IP addresss
+`
+kubectl get svc -n platform | grep postgres
+`
+
+## 3. Create ssh tunnel to Postgres using sshutle
+
+`
+sshuttle -vr veritas@13.66.173.11  10.10.0.4/16 -e 'ssh -i  ~/.ssh/mcdmp.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+`
+
+## 4. Use PGAdmin or equivalent Postgres client to connect to 10.10.0.4
+
+`
+psql -h 10.10.0.4 -p 5432 -d policymanager -U workflowdev
+
+
+ssh -i ~/.ssh/mcdmp.pem veritas@52.229.57.231 -L 5432:localhost:5432
+
+
+-------------------------------------------------
+
+
+Exporting of kubeconfig
+
+az acs kubernetes get-credentials --resource-group=$AZ_RESOURCE_GROUP --name=$K8_CLUSTER --ssh-key-file=$SSH_KEY --file cruxrgkubeconfig
+
+az acs kubernetes get-credentials --resource-group=ry0102dp --name=ry0102dp --ssh-key-file=~/id_rsa_mcdmp.dms --file /tmp/kubeconfig
+
+
+----- For Acessing the Persistence VM stuff
+
+az login
+
+az account set –s <sub id>
+
+copy keys to ~/.ssh folder
+
+chmod 400 ~/.ssh/id_rsa_mcdmp
+
+chmod 400 ~/.ssh/mcdmp.pem
+az acs kubernetes get-credentials --resource-group=$AZ_RESOURCE_GROUP --name=$K8_CLUSTER --ssh-key-file=$SSH_KEY
+
+
+--- For Acessing the postgres on the persistene VM
+
+sudo docker ps
+
+
+
+---- For Rabbit MQ portfoward
+
+Get the pods port forward it so that we can get local management console of rabbit mq
+
+
+kubectl port-forward rabbitmq-0 15672:15672 -n platform
+
+
+-----
+
+For Git related important commands
+
+
+To delete local branches
+
+git branch -d develop

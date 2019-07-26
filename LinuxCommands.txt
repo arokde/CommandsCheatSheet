@@ -1,0 +1,25 @@
+[root@olympia-ar services]#  netstat -nltp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 127.0.0.1:35488         0.0.0.0:*               LISTEN      7204/pbx_exchange
+tcp        0      0 127.0.0.1:8001          0.0.0.0:*               LISTEN      6651/hostagent
+tcp        0      0 0.0.0.0:1556            0.0.0.0:*               LISTEN      7204/pbx_exchange
+tcp        0      0 127.0.0.1:1557          0.0.0.0:*               LISTEN      7204/pbx_exchange
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      7094/sshd
+tcp6       0      0 :::50080                :::*                    LISTEN      19091/java
+tcp6       0      0 :::50443                :::*                    LISTEN      19091/java
+tcp6       0      0 :::35444                :::*                    LISTEN      19091/java
+tcp6       0      0 :::1556                 :::*                    LISTEN      7204/pbx_exchange
+tcp6       0      0 :::60501                :::*                    LISTEN      19091/java
+tcp6       0      0 :::22                   :::*                    LISTEN      7094/sshd
+[root@olympia-ar services]#  systemctl status hostagent
+● hostagent.service - Host Agent Service
+   Loaded: loaded (/etc/systemd/system/hostagent.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sun 2018-12-30 20:38:17 PST; 1 day 12h ago
+ Main PID: 6651 (hostagent)
+   CGroup: /system.slice/hostagent.service
+           └─6651 /opt/IMAppliance/infra/hostagent
+
+Dec 30 20:38:17 flex-appliance systemd[1]: Started Host Agent Service.
+[root@olympia-ar services]#  systemctl list-units | grep fops
+fops.service                                                                              loaded active running   VERITAS FOPS platform

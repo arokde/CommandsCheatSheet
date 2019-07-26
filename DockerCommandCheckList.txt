@@ -1,0 +1,127 @@
+Important docker commands
+
+docker --version
+#This will print the both client and server(daemon)
+docker version
+#This will list all the docker images in the local docker repository
+docker images
+docker image ls
+#This will list all the containers which are running
+docker container ls
+#this will start a container with image test:latest and port forward 8080:8080
+docker container run -d --name web1 -p 8080:8080 test:latest
+#This will stop the container with container id <containerID>
+docker stop <containerID>
+#This command will build a image from the docker file -t stands for tag
+docker image build -t <imageName>:<tagName> .
+#To inspect an image
+docker image inspect <imageName>:<tagName>
+#To remove image from the image repository
+docker image rm <imageName>:<tagName>
+docker image rm <imageID>
+#To remove all images from the image repository.
+docker image rm $(docker image ls -q) -f
+#To list all the containers which are running/stopped
+docker ps -a
+#To remove the containers
+docker container rm  <containerName>
+docker container rm  <containerID>
+#To list all the containerid and remove them. This means hard stop and
+#remove them
+docker container rm $(docker ps -a -q)
+#To attach to the running container
+docker container exec -it <containerID or containerName> <command>
+docker container exec -it <containerID or containerName> /bin/bash
+#In order to remove images from the local image repository
+docker image prune
+#In order to run a container in detach mode use -d option
+docker container run -d --name <containerName> -p <exposedPort:port> imageName
+ex: docker container run -d --name myserver -p 80:8080 repositoryName/imageName:tagName
+#In order to remove the containers forcefully
+docker container rm $(docker container ps -aq) -f
+#Ability to make the single node or VM as docker swarm manager
+#in case of load balancer the ipaddress1 can be loadbalaner ip ipaddress
+#it makes sense to have both this ipaddress specified
+docker swarm init --advertise-addr <ipaddress1:2377> --listen-addr <ipAdress2:2377>
+#To create a token for the workers to join this manager run the command on leader node
+docker swarm join-token --token <tokenString> worker <ipaddress1:2377>
+#To create a token for other managers to join this manager run the command on the leader node
+docker swarm join-token --token <tokenString> manager <ipAddress1:2377>
+#To create a service to be used in the docker swarm deployment
+docker service create --name <serviceName> -p <port:port> --replicas <repliceCount> <imageName>
+#To list all the services
+docker service ls
+#To list all the task (containers) running in a service and their task
+docker service ps <serviceName>
+#To get the detailed information about the service
+docker service inspect --pretty <serviceName or serviceID>
+#To increase the scale of the sevice
+docker service scale <serviceID or serviceName>=<repliceCount>
+#To remove a service
+docker service rm  <serviceName or serviceID>
+#To create an overlay network
+docker network create -d overlay <networkName>
+#To clean data from the docker host
+docker system prune -f
+#To remove the docke image
+docker rmi <repositoryName:tag> or <imageID>
+#To run the docker image if it is present in the docker registry or pull the image into the local docker registry and run it.
+docker run <repositoryName:tag> // if tag is not given defaults to latest
+#One can stop the containers and then we start then they pick the state where they were in. Unless one does remove container
+#To run the docker in the detached mode
+docker run -d --name <nameOfContainer> -p 80:8080 <repositoryName:tagName> // start the specified image , map the inside port 8080 to the outside 80
+docker run -it --name <nameOfContainer> <repositoryName:tagName> COMMAND // docker run -it --name temp ubuntu:latest /bin/bash
+# the command ctrl + p + q for exiting the container without terminating it process
+docker stop $(docker ps -aq) // -a all container -q quiet meaning returns only the container ids
+docker run
+docker pull
+docker images
+docker rmi // removes images from the docker host
+docker ps
+docker stop
+docker rm // removes the stopped container and if used with '-f' option force; it means stopping and deleting the container
+********************************************************************************************************
+Docker Swarm mode
+********************************************************************************************************
+Terminology
+Swarm mode -- docker engine running per host or machine in swarm mode
+Manager node - a particular node running in manager mode ( 3 or 5 manager nodes is recommended )
+Leader - one leader out of all the manager nodes
+Worker node - execute task
+Services - Declarative and scalable
+Task - Assigned to work atomict unit ex : each task is one container
+docker service create --name web-fe --replica 5 // create a service with name web-fe and has 5 task/containers/instances of it
+docker swarm init --advertise-addr  <ipAddress>:2377 --listen-addr <ipAddress>:2377 // in case of multiple nic/ips it is always better to specify the ipaddress
+// listen-addr one on which swarm listens on the swarm related traffic 2377 is going to official docker swarm port forward
+docker swarm join --token <workertokenString> <ipAddress>:2377 // ipAddress of the swarm manager
+docker swarm join-token-manager // this results a command which can be used when another node wants to join a swarm manager
+docker swarm join --token  <managertokenstring> <ipAddress>:2377 // ipAddress of the swarm manager
+docker swarm join-token-manager // prints the command to be executed when a node wants to join as a manager
+docker swarm join-token-worker // prints the command to be executed when node wants to join as a worker
+docker swarm join --token <workertokenString> <ipAddressofMachineWhereSwarmInit>:2377 --advertise-addr  <ipAddress>:2377 --listen-addr <ipAddress>:2377
+docker node ls // print all the nodes in the Swarm.Can be run from only manager nodes
+docker node promote <idfromthebovedockernodelscommand>|<ipAddres> //this promotes the ipAddress machine to be a manager
+docker node ps //list all the containers running on the node
+********************************************************************************************************
+Docker Swarm mode Services
+********************************************************************************************************
+docker service create --name <serviceName> -p <insidePort:outsidePort> --replicas <replicaCount> <imageName>
+docker service ps <serviceName> //list all the service instances / tasks across the swarm
+//native container aware load balancer routing mesh
+docker service scale <serviceName>=<replicaCount>
+docker service update --replicas <replicaCount> <serviceName>
+//One can have multiple container instances per docker node
+docker network create -d overlay <networkName> // create a overlay network with networkName
+docker network ls
+docker service create --name <serviceName> -p <insidePort:outsidePort> --replicas <replicaCount> --network <networkName> <imageName>
+docker service inspect --pretty <serviceName>
+docker service create --name <serviceName> --update-parallelism <parallelismCount> --update-delay <delayCount>
+********************************************************************************************************
+Docker Stack and DAB (Distributed Application Bundles)
+********************************************************************************************************
+Stack is logical unit of all docker services so they can be deployed as one units
+docker-compose build // to build the images and pushed into the repository
+docker-compose bundle // creates the dab file . it requires the compose file to cleaned of volume and should be referring to images
+docker stack deploy <dabfilename> // create a stack with name <dabFileName> and services defined inside the dab file are deployed
+docker stack tasks <stackName> // shows the task inside each service
+docker stack rm <stackName>
