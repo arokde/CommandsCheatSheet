@@ -15,3 +15,10 @@ eval $(minikube docker-env)
 kubectl config current-context // display the current context
 kubectl config use-context
 kubectl apply --filename <addon> //install the addon 
+kubectl get pods --all-namespaces --watch
+kubectl get nodes
+#Used to list the token on the master node
+kubeadm token list 
+#Used to create a new token
+kubeadm token create 
+
