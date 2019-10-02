@@ -35,29 +35,10 @@ kubectl create deployment --image=nginx nginx --dry-run -o yaml
 kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run --replicas=4 -o yaml
 #Save it to a file - (If you need to modify or add some other details)
 kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run --replicas=4 -o yaml > nginx-deployment.yaml
-#Creation of config map 
-kubectl create configmap configmapname --from-literal=<key>=<value> --from-literal=<key>=<value>
-kubectl create configmap configmapname --from-file=<pathToFile>
-kubectl create configmap configmapname --from-file=app_config.propertie
-# Secret creation
-kubectl create secret generic <secret-name> --from-literal=<key>=<value> --from-literal=<key>=<value>s
-kubectl create secret generic <secret-name> --from-file=<pathToFile>
-kubectl create secret generic <secret-name> --from-file=secret-config.properties
-kubectl create serviceaccount <serviceAccountName>
-kubectl describe serviceacoount <serviceAccountName>
-# the above command wil dispaly the service account details
-kubectl describe secret <serviceAccountTokenName>
-#To mark/taint a paritcular node 
-#tainEffect = NoSchedule|PreferNoSchedule|NoExecute
-#NoSchedule: Pods which are intolerent to this tain will not be scheduled
-#PreferNoSchedule:Pod which are intolerent to this taint will not be preferred to schedule
-#NoExecute: Pod which are not tolerent and if already available will be evicted
-#Taints and toleranted does not gurantee that a pod which is tolerant to a taint will be scheduled at that tainted node.It may very well be scheduled to another non tainted node
-kubectl taint nodes <nodeName> key=value:<taintEffect>
-#to check what taint is in effect for a node
-kubectl describe node <nodeName> | grep Taint 
-#To remove the existing taint on the node using - at end of node 
-kubectl taint node <nodeName> key=value:<taintEffect>-
+
+
+
+
 
 
 

@@ -21,3 +21,58 @@ curl -XPUT "[endpoint]/[index_name]/[type_name]/[id]" -d'
 {
     [document body]
 }'
+# In elastic search documents are immutable and thus any change to the document 
+# results in creation of new version and older version are marked for delete
+#for deletion http VERB DELETE is used
+# With elastic 7 type has been replaced with _doc 
+DELETE <indexName>/_doc/<documentID>
+# for update of the document use 
+PUT <indexName>/_doc/<documentID>/_update
+# for search of the document 
+GET <indexNam>/_search/?q=<searchString>
+# retry on conflicts is used to signify that in case the values changes from the last read, retry 
+retry_on_conflicts=N>
+PUT <indexName>/_doc/<documentID>?if_seq_no=<sequenceNo>&if_primary_term=<primaryTerm>
+#Example of query payload
+{
+    "query": {
+    	"match_phrase":{
+    		"fieldname":"fieldvalue"
+    	}
+    }
+}
+{
+    "query": {
+    	"match":{
+    		"fieldname":"fieldvalue"
+    	}
+    }
+}
+#Example of add new mapping for an index 
+{
+	"mappings":{
+		"properties":{
+			"id": {"type":"integer"},
+			"year":{"type":"date"},
+			"genre": {"type":"keyword"},
+			"title": {"type":"text","analyzer":"english"}
+		}
+	}
+}
+#Example of filters which are boolean operations 
+GET payload 
+{
+	"query":{
+		"bool":{
+			"must":{
+				"term":{"title":"trek"}
+			},
+			"filter":{
+				"range":{
+					"year":{"gte":"2010"}
+				}
+			}
+		}
+	}
+}
+#Concept of proximity queries 
